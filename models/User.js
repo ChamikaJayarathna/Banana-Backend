@@ -1,5 +1,8 @@
 import mongoose from "mongoose";
 
+let profile_imgs_name_list = ["bulging", "dizzy", "eva", "frame1", "frame2", "glow", "happy", "hearts", "robocop", "robocop", "roundFrame01", "roundFrame02", "sensor", "shade01"];
+let profile_imgs_collections_list = ["bottts-neutral"];
+
 const UserSchema = new mongoose.Schema({
     username: {
         type: String,
@@ -21,7 +24,7 @@ const UserSchema = new mongoose.Schema({
     profile_img:{
         type:String,
         default: () => {
-            `https://api.dicebear.com/6.x/${profile_imgs_collections_list[Math.floor(Math.random() * profile_imgs_collections_list.length)]}/svg?seed=${profile_imgs_name_list[Math.floor(Math.random() * profile_imgs_name_list.length)]}`
+            return `https://api.dicebear.com/9.x/${profile_imgs_collections_list[Math.floor(Math.random() * profile_imgs_collections_list.length)]}/svg?seed=${profile_imgs_name_list[Math.floor(Math.random() * profile_imgs_name_list.length)]}`
         }
     }
 });
