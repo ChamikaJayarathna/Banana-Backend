@@ -21,6 +21,24 @@ const UserSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    levelScores: {
+        easy: {
+            type: Number,
+            default: 0
+        },
+        medium: {
+            type: Number,
+            default: 0
+        },
+        hard: {
+            type: Number,
+            default: 0
+        },
+        expert: {
+            type: Number,
+            default: 0
+        }
+    },
     profile_img:{
         type:String,
         default: () => {
