@@ -74,27 +74,24 @@ router.post('/login', async (req, res) => {
     }
 });
 
-router.put('/score', verifyJWT, async (req, res, ) => {
-
-    const { score } = req.body;
-
+router.put('/score', verifyJWT, async (req, res) => {
+    const { score, level } = req.body;
+  
     try {
-        const userId = req.user._id;
-        const user = await User.findById(userId);
-
-        if(!user){
-            return res.status(404).json({ error: "User not found" });
-        }
-
-        user.score = parseInt(score);
-        await user.save();
-
-        res.status(200).json({ message: "Game Score updated", score: user.score });
-
+      const userId = req.user._id;
+      const user = await User.findById(userId);
+  
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+  
+      user.levelScores[level] = (user.levelScores[level] || 0) + score;
+      await user.save();
+  
+      res.status(200).json({ message: "Game Score updated", levelScores: user.levelScores });
     } catch (error) {
-        res.status(400).json({ error: error.message });
+      res.status(400).json({ error: error.message });
     }
-
 });
 
 export default router;
