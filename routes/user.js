@@ -94,4 +94,23 @@ router.put('/score', verifyJWT, async (req, res) => {
     }
 });
 
+router.get('/userdetails', async (req, res) => {
+    const mode = req.query.mode;
+  
+    try {
+      const users = await User.find({}, 'username levelScores');
+  
+      const transformedUsers = users
+        .map(user => ({
+          username: user.username,
+          score: user.levelScores[mode] || 0
+        }))
+        .filter(user => user.score > 0);
+  
+      res.status(200).json(transformedUsers);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+});
+
 export default router;
