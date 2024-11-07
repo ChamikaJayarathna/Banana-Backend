@@ -67,7 +67,7 @@ router.post('/login', async (req, res) => {
         }
 
         const token = createToken(user._id);
-        res.status(200).json({ message: "Login successfully",email, token });
+        res.status(200).json({ message: "Login successfully",email, token, _id: user._id });
 
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -111,6 +111,25 @@ router.get('/userdetails', async (req, res) => {
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
+});
+
+router.get('/user/:id', verifyJWT, async (req, res) => {
+
+    const { id } = req.params;
+
+    try {
+        const user = await User.findById(id, 'username email levelScores profile_img');
+
+        if(!user){
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        res.status(200).json(user);
+
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+
 });
 
 export default router;
