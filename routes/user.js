@@ -118,6 +118,50 @@ router.post('/forgot-password', async (req, res) => {
 
 });
 
+router.post('/reset-password-verify', (req, res) => {
+
+    const { token } = req.body;
+
+    jwt.verify(token, process.env.MY_SECRET_KEY, (err, decoded) => {
+        if (err){
+            return res.status(403).json({ error: "Access token is invalid" });
+        }
+        else {
+            res.status(200).json({ data: "Access token is valid" });
+        }
+    });
+});
+
+router.post('/reset-password', async (req, res) => {
+
+    const { token, newPassword } = req.body;
+
+    if(!passwordRegex.test(newPassword)){
+        return res.status(403).json({ error: "Password should be 6 to 20 characters long with a numeric, 1 lowercase and 1 uppercase letters" });
+    }
+
+    try {
+        const decoded = jwt.verify(token, process.env.MY_SECRET_KEY);
+
+        const user = await User.findOne({_id: decoded.id});
+
+        if(!user){
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        await User.findOneAndUpdate({ _id: decoded.id }, { "password": hashedPassword });
+
+        res.status(200).json({ status: "Password has been reset successfully" });
+
+    } catch (error) {
+        console.log(error);
+        return res.status(403).json({ error: "Invalid or expired token" });
+    }
+
+});
+
 router.put('/score', verifyJWT, async (req, res) => {
     const { score, level } = req.body;
   
